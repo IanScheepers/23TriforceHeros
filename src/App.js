@@ -7,7 +7,7 @@ function App() {
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
-          Edit <code>src/App.js</code> and save to reload. the triforceheros soundtrack goes hard
+          Edit <code>src/App.js</code> and save to reload. the triforceheros soundtrack goess
         </p>
         <a
           className="App-link"
