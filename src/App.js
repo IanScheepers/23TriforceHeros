@@ -39,7 +39,7 @@ function App() {
             <Container sx={{ bgcolor: '#afe3ff', height: "75vh", borderRadius: '16px', borderColor: '#131313', p: 4, my: 4, boxShadow: 5 }} >
                 <Typography variant="h1" sx={{ color: '#131313', textAlign: 'center' }} >AI Flight Price Predictor</Typography>
 
-                <Typography variant="h6" sx={{ textAlign: 'center', my: 10 }}>Thanks to evolutions in technology we are now able to (with varying levels of success) predict future flight prices in Australia! Input the required features in their respective box to become more informed on your future flights price.</Typography>
+                <Typography variant="h6" sx={{ textAlign: 'center', my: 10 }}>Thanks to evolutions in technology we are now able to (with varying levels of success) predict future flight prices in Australia! Input the required features in their respective box to become more informed on your future flight's price.</Typography>
 
                 <Box sx={{ mt: 4, textAlign: 'center' }}>
                     <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: "space-between", gap: 4 }}>
