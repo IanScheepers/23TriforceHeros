@@ -16,6 +16,7 @@ import {
     Add as AddIcon,
 } from '@mui/icons-material';
 import img1 from './images/iloveAI.png'
+import axios from 'axios';
 
 
 function About() {
@@ -32,7 +33,31 @@ function About() {
 }
 
 function App() {
-    const features = ["Year", "Flights Flown", "Month", "Price", "Distance(Km)" ]
+    const [year, setYear] = useState('');
+    const [flightFlown, setFlightFlown] = useState('');
+    const [month, setMonth] = useState('');
+    const [km, setKm] = useState('');
+    const [predictedPrice, setPredictedPrice] = useState(null);
+
+    const [error, setError] = useState('');
+    const [chartData, setChartData] = useState(null);
+    const [loading, setLoading] = useState(false);
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setError('');
+        setPredictedPrice(null);
+        setLoading(true);
+        
+
+
+
+    }
+
+
+
+
+    const features = ["Year", "Flights Flown", "Month", "Distance(Km)"]
 
     return (
         <div className= 'wapper'>
