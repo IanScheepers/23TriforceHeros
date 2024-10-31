@@ -23,7 +23,7 @@ async def root():
 @app.get("/predict/{year}/{flights_flown}/{month}/{km}")
 async def predict_price(year: int, flights_flown: int, month: int, km: int):
     try:
-        price = model.predict(year, flights_flown, month, km)
+        price = model.predict(year, flights_flown, month, km)[0]
         return {"price": round(price, 2)}
     except ValueError as e:
         raise HTTPException(status_code=400, detail=f"\
