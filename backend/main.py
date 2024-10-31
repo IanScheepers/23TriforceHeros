@@ -14,7 +14,7 @@ app.add_middleware(
 )
 
 # Load data and initialize the model
-model = FlightPriceModel(degrees=8)
+model = FlightPriceModel(degrees=8, load=True)
 
 @app.get("/")
 async def root():
@@ -26,7 +26,8 @@ async def predict_price(year: int, flights_flown: int, month: int, km: int):
         price = model.predict(year, flights_flown, month, km)
         return {"price": round(price, 2)}
     except ValueError as e:
-        raise HTTPException(status_code=400, detail=f"\Invalid input: {str(e)}")
+        raise HTTPException(status_code=400, detail=f"\
+                            Invalid input: {str(e)}")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
