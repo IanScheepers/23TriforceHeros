@@ -29,7 +29,6 @@ async def predict_price(year: int, flights_flown: int, month: int, km: int):
         raise HTTPException(status_code=400, detail=f"\
                             Invalid input: {str(e)}")
     except Exception as e:
-        return {"price": 100}
         raise HTTPException(status_code=500, detail=str(e))
 
 # Load and predict
