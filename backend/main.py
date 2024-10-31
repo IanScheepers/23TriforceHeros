@@ -31,9 +31,6 @@ async def predict_price(year: int, flights_flown: int, month: int, km: int):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-# Load and predict
-print("Prediction:", model.predict(2018, 401, 12, 476))
-
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
