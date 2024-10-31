@@ -15,6 +15,10 @@ const theme = createTheme({
         secondary: {
             main:"#2e774c9"
         },
+        text: {
+
+            disabled: "#151515"
+        }
     },
     body: {
         backgroundcolor: "#1976d2",

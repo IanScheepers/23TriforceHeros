@@ -17,8 +17,12 @@ import {
 } from '@mui/icons-material';
 import img1 from './images/iloveAI.png'
 import axios from 'axios';
-
-
+import { Line } from 'react-chartjs-2';
+import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
+import InputAdornment from '@mui/material/InputAdornment';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import InputLabel from '@mui/material/InputLabel';
+import FormControl from '@mui/material/FormControl';
 function About() {
     return (
         <Container>
@@ -48,11 +52,20 @@ function App() {
         setError('');
         setPredictedPrice(null);
         setLoading(true);
-        
 
+        try {
+            // Axios call to the backend to predict house price
+            const response = await axios.get(`http://localhost:8000/predict/${year}/${flightFlown}/${month}/${km}`);
+            setPredictedPrice(response.data.price);
+            console.log(predictedPrice)
 
-
-    }
+        } catch (err) {
+            setError('Error predicting price. Please try again.');
+            console.error(err);
+        } finally {
+            setLoading(false);
+        }
+    };
 
 
 
@@ -61,24 +74,96 @@ function App() {
 
     return (
         <div className= 'wapper'>
-            <Container sx={{ bgcolor: '#afe3ff', height: "75vh", borderRadius: '16px', borderColor: '#131313', p: 4, my: 4, boxShadow: 5 }} >
+            <Container sx={{ bgcolor: '#afe3ff', borderRadius: '16px', borderColor: '#131313', p: 4, my: 4, boxShadow: 5 }} >
                 <Typography variant="h1" sx={{ color: '#131313', textAlign: 'center' }} >AI Flight Price Predictor</Typography>
 
                 <Typography variant="h6" sx={{ textAlign: 'center', my: 10 }}>Thanks to evolutions in technology we are now able to (with varying levels of success) predict future flight prices in Australia! Input the required features in their respective box to become more informed on your future flight's price.</Typography>
 
                 <Box sx={{ mt: 4, textAlign: 'center' }}>
-                    <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: "space-between", gap: 4 }}>
-                        {features.map((feature) => (
-                            <TextField fullWidth sx={{ bgcolor: '#ffffff', borderRadius: '4px', boxShadow: 3}} label={feature} variant="outlined" />
-                        ))}
-                    </Box>
-                    <Button variant="contained" sx={{ mt: 4, textAlign: 'center', boxShadow: 3 }}>Predict</Button>
+                   
+                    <form onSubmit={handleSubmit}>
+                        <Box sx={{ mt: 4, textAlign: 'center' }}>
+                            <Box item sx={{ display: 'flex', my: 1, flexDirection: 'row', justifyContent: "space-between", gap: 4 }}>
+                                <TextField
+                                    sx={{ bgcolor: '#ffffff', borderRadius: '4px', boxShadow: 3 }}
+                                    fullWidth
+                                    type="number"
+                                    label="Year"
+                                    variant="outlined"
+                                    value={year}
+                                    onChange={(e) => setYear(e.target.value)}
+                                    required
+                                />
+                            </Box>
+                            <Box item sx={{ display: 'flex', my: 1,flexDirection: 'row', justifyContent: "space-between", gap: 4 }}>
+                                <TextField
+                                    sx={{ bgcolor: '#ffffff', borderRadius: '4px', boxShadow: 3 }}
+                                    fullWidth
+                                    type="number"
+                                    label="Flights Flown"
+                                    variant="outlined"
+                                    value={flightFlown}
+                                    onChange={(e) => setFlightFlown(e.target.value)}
+                                    required
+                                />
+                            </Box>
+                            <Box item sx={{ display: 'flex', my: 1, flexDirection: 'row', justifyContent: "space-between", gap: 4 }}>
+                                <TextField
+                                    sx={{ bgcolor: '#ffffff', borderRadius: '4px', boxShadow: 3 }}
+                                    fullWidth
+                                    type="number"
+                                    label="Month"
+                                    variant="outlined"
+                                    value={month}
+                                    onChange={(e) => setMonth(e.target.value)}
+                                    required
+                                />
+                            </Box>
+                            <Box item sx={{ display: 'flex', my: 1, flexDirection: 'row', justifyContent: "space-between", gap: 4 }}>
+                                <TextField
+                                    sx={{ bgcolor: '#ffffff', borderRadius: '4px', boxShadow: 3 }}
+                                    fullWidth
+                                    type="number"
+                                    label="Km"
+                                    variant="outlined"
+                                    value={km}
+                                    onChange={(e) => setKm(e.target.value)}
+                                    required
+                                />
+                            </Box>
+                            
+                            <Button
+                                sx={{ mt: 3, textAlign: 'center', boxShadow: 3 }}
+                                type="submit"
+                                variant="contained"
+
+                                disabled={loading}
+                            >
+                                {loading ? <CircularProgress size={24} /> : 'Predict Price'}
+                            </Button>
+
+                        </Box>
+                    </form>
+
+                    <FormControl sx={{ display: 'flex', my: 4, flexDirection: 'row', justifyContent: "space-between", gap: 4 }}>
+                        <InputLabel htmlFor="outlined-adornment-amount">Projected Price</InputLabel>
+                        <OutlinedInput 
+                            fullWidth
+                            sx={{
+                                bgcolor: '#dcf3ff', borderRadius: '4px', boxShadow: 3 }}
+                            id="outlined-adornment-amount"
+                            startAdornment={<InputAdornment position="start">$</InputAdornment>}
+                            
+                            label="Projected Price"
+                            value={predictedPrice}
+                            onChange={(e) => setPredictedPrice(e.target.value)}
+                            disabled
+
+                        />
+                    </FormControl>
                 </Box>
             </Container>
-        </div>
-        
-        
-        
+        </div>  
   );
 }
 
