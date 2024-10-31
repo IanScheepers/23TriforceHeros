@@ -10,7 +10,9 @@ python.exe -m pip install "scikit-learn"
 python.exe -m pip install -e flight_price_model
 
 # EVERY SUBSEQUENT TIME
+[navigate to backend folder]
 .venv\Scripts\Activate.ps1
+uvicorn main:app --reload
 
 Now you should be able to run the python scripts to run the code
 
