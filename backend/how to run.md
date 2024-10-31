@@ -6,9 +6,8 @@ python3 -m venv .venv
 python -m pip install --upgrade pip
 python.exe -m pip install "fastapi[standard]"
 python.exe -m pip install "pandas"
-python.exe -m pip install "matplotlib"
-python.exe -m pip install "seaborn"
 python.exe -m pip install "scikit-learn"
+python.exe -m pip install -e flight_price_model
 
 # EVERY SUBSEQUENT TIME
 .venv\Scripts\Activate.ps1

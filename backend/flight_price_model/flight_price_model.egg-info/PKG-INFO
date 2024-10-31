@@ -1,0 +1,10 @@
+Metadata-Version: 2.1
+Name: flight_price_model
+Version: 1.12
+Summary: Polynomial regression package for predicting flight prices.
+Author: Ian Scheepers
+Author-email: 104455565@student.swin.edu.au
+Requires-Dist: numpy
+Requires-Dist: pandas
+Requires-Dist: scikit-learn
+Requires-Dist: joblib
