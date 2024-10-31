@@ -6,9 +6,11 @@ from sklearn.model_selection import train_test_split
 import joblib
 
 class FlightPriceModel:
-    def __init__(self, degrees):
+    def __init__(self, degrees, load):
         self.poly = PolynomialFeatures(degree=degrees)
         self.lin = LinearRegression()
+        if load:
+            self.load_weights()
     
     def predict(self, year, flightsFlown, month, km):
         X_new = np.array([[year, flightsFlown, month, km]])
@@ -33,7 +35,7 @@ class FlightPriceModel:
         y = dfDATAONLY['Price']
 
         self.lin.fit(self.poly.fit_transform(X), y)
-        
+
         joblib.dump({
             'poly': self.poly,
             'lin': self.lin
