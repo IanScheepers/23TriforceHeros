@@ -31,11 +31,13 @@
 .wapper {
     background-color: #262626;
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    display: inline-block;
+    padding: 4vh;
+    border: 1px solid #333;
+    text-align: center;
+    width: 100%
 }
+
 
 
 
