@@ -7,6 +7,7 @@ python -m pip install --upgrade pip
 python.exe -m pip install "fastapi[standard]"
 python.exe -m pip install "pandas"
 python.exe -m pip install "scikit-learn"
+python.exe -m pip install "pydantic"
 python.exe -m pip install -e flight_price_model
 
 # EVERY SUBSEQUENT TIME
