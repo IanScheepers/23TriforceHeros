@@ -24,13 +24,12 @@ async def root():
 
 # Define a Pydantic model to validate and parse input data for prediction
 class PredictionInput(BaseModel):
-    # Field defines constraints for input validation
     year: int = Field(ge=2010, le=3000, description="Year of the flight") #2010<=year<=3000
     flights_flown: int = Field(gt=0, description="Amount of flights that this route has seen this month") #0<flights_flown
     month: int = Field(ge=0, le=12, description="Month of the flight") #0<=month<=12
     km: int = Field(ge=200, le=3700, description="Flight distance in kms rounded to nearest whole") #200<=km<=3700
   
-# Define a POST endpoint for predicting house prices
+# Define a POST endpoint for predicting flight prices
 @app.post("/predict")
 async def predict_price(input: PredictionInput):
     try:
@@ -42,11 +41,48 @@ async def predict_price(input: PredictionInput):
         raise HTTPException(status_code=400, detail=f"\
                             Invalid input: {str(e)}")
     except Exception as e:
-        # Log the error if an exception occurs during prediction
         logger.error(f"Error during prediction: {str(e)}")
-        
-        # Raise an HTTP 500 Internal Server Error if prediction fails
         raise HTTPException(status_code=500, detail="Internal server error")
+
+#Define a GET endpoint for predicting flight prices
+@app.get("/predict/{year}/{flights_flown}/{month}/{km}")
+async def predict_price(year: int, flights_flown: int, month: int, km: int):
+    try:
+        price = model.predict(year, flights_flown, month, km)[0]
+        return {"price": round(price, 2)}
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=f"\
+                            Invalid input: {str(e)}")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 if __name__ == "__main__":
     import uvicorn
