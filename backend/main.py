@@ -44,18 +44,6 @@ async def predict_price(input: PredictionInput):
         logger.error(f"Error during prediction: {str(e)}")
         raise HTTPException(status_code=500, detail="Internal server error")
 
-#Define a GET endpoint for predicting flight prices
-@app.get("/predict/{year}/{flights_flown}/{month}/{km}")
-async def predict_price(year: int, flights_flown: int, month: int, km: int):
-    try:
-        price = model.predict(year, flights_flown, month, km)[0]
-        return {"price": round(price, 2)}
-    except ValueError as e:
-        raise HTTPException(status_code=400, detail=f"\
-                            Invalid input: {str(e)}")
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
