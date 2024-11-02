@@ -24,6 +24,7 @@ import {
 import img1 from './images/iloveAI.png'
 import axios from 'axios';
 import { Line, Bar } from 'react-chartjs-2';
+
 //import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
 import InputAdornment from '@mui/material/InputAdornment';
 import OutlinedInput from '@mui/material/OutlinedInput';
@@ -32,10 +33,10 @@ import FormControl from '@mui/material/FormControl';
 
 
 
-import { Chart, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
+import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement,BarElement, Title, Tooltip, Legend } from 'chart.js';
 
 // Register the required components
-Chart.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, BarElement, Legend);
 
 
 function About() {
@@ -63,6 +64,8 @@ function App() {
     const [barChartData, setbarChartData] = useState(null);
     const [loading, setLoading] = useState(false);
 
+
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
@@ -70,51 +73,97 @@ function App() {
         setLoading(true);
 
         try {
+
+            const test = await axios.get(`http://localhost:8000/status`);
+            console.log(test.data.message)
+
             // Axios call to the backend to predict house price
-            const response = await axios.get(`http://localhost:8000/predict/${year}/${flightFlown}/${month}/${km}`);
+            const response = await axios.post("http://localhost:8000/predict", {
+                year: year,
+                flights_flown: flightFlown,
+                month: month,
+                km: km,
+            });
             setPredictedPrice(response.data.price);
             console.log(predictedPrice)
 
             //flight
-
             // [2010, 730, 4, 643]  // Smallest $56
             // [2019,198,12, 434]   // Middle   $238
             // [2018, 150, 11, 287] // Median   $343
             // [2012, 250, 1, 1971] // Middle   $495
             // [2021, 44, 4, 2651]  // Largest  $1453
 
+
             const flightsBaseData = [[2010, 730, 4, 643], [2019, 198, 12, 434], [2018, 150, 11, 287], [2012, 250, 1, 1971], [2021, 44, 4, 2651]];
             const predictions = await Promise.all(
-                flightsBaseData.map(sf =>
-                    axios.get(`http://localhost:8000/predict/${year}/${flightFlown}/${month}/${km}`)
-                        .then(res => res.data.price)
+                flightsBaseData.map(fbd =>
+                    axios.post("http://localhost:8000/predict", {
+                        year: fbd[0],
+                        flights_flown: fbd[1],
+                        month: fbd[2],
+                        km: fbd[3],
+                    }).then(res => res.data.price)
+                        
                 )
             );
 
-            // Creating the chart data using the predictions from the backend
+
+            const squareFootagesKMSCALE = [236,3615]
             const newChartData = {
-                labels: flightsBaseData, // X-axis labels (square footage)
+                labels: squareFootagesKMSCALE,  // X-axis labels (square footage)
                 datasets: [
                     {
-                        label: 'Predicted Prices',
+                        label: 'Highest and lowest recorded distances',
                         data: predictions,  // Y-axis data (predicted prices)
                         borderColor: 'rgb(75, 192, 192)',
                         backgroundColor: 'rgba(75, 192, 192, 0.5)',
                         tension: 0.1
                     },
                     {
-                        label: 'Your Prediction',
-                        data: [{ x: parseInt(km), y: response.data.price}],
+                        label: 'Your flight',
+                        data: [{ x: parseInt(km), y: response.data.price }],
                         borderColor: 'rgb(255, 99, 132)',
                         backgroundColor: 'rgba(255, 99, 132, 0.5)',
                         pointRadius: 8,
                         pointHoverRadius: 12,
-                        showLine: false // Show only the point for the user's prediction
+                        showLine: false  // Show only the point for the user's prediction
                     }
                 ]
             };
+
             setlinearChartData(newChartData);  // Set the chart data in state
-            setbarChartData(newChartData);  // Set the chart data in state
+
+            const labels = ["Lowest Price In Dataset","Your Price","Highest Price In Dataset"];
+            const data = {
+                labels: labels,
+                datasets: [{
+                    label: "Your price against Highest and Lowest in the Dataset",
+                    data: [55, response.data.price,1453],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(255, 159, 64, 0.2)',
+                        'rgba(255, 205, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(153, 102, 255, 0.2)',
+                        'rgba(201, 203, 207, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgb(255, 99, 132)',
+                        'rgb(255, 159, 64)',
+                        'rgb(255, 205, 86)',
+                        'rgb(75, 192, 192)',
+                        'rgb(54, 162, 235)',
+                        'rgb(153, 102, 255)',
+                        'rgb(201, 203, 207)'
+                    ],
+                    borderWidth: 1
+                }]
+
+            };
+            setbarChartData(data);  // Set the chart data in state
+
 
         } catch (err) {
             setError('Error predicting price. Please try again.');
@@ -145,6 +194,7 @@ function App() {
                                     type="number"
                                     label="Year"
                                     variant="outlined"
+                                    inputProps={{ min: 2010, max: 3000 }}
                                     value={year}
                                     onChange={(e) => setYear(e.target.value)}
                                     required
@@ -155,6 +205,7 @@ function App() {
                                     sx={{ bgcolor: '#ffffff', borderRadius: '4px', boxShadow: 3 }}
                                     fullWidth
                                     type="number"
+                                    inputProps={{ min: 1 }}
                                     label="Flights Flown"
                                     variant="outlined"
                                     value={flightFlown}
@@ -169,6 +220,7 @@ function App() {
                                     type="number"
                                     label="Month"
                                     variant="outlined"
+                                    inputProps={{ min: 1, max: 12 }}
                                     value={month}
                                     onChange={(e) => setMonth(e.target.value)}
                                     required
@@ -181,6 +233,7 @@ function App() {
                                     type="number"
                                     label="Km"
                                     variant="outlined"
+                                    inputProps={{ min: 200, max: 3700 }}
                                     value={km}
                                     onChange={(e) => setKm(e.target.value)}
                                     required
@@ -222,7 +275,7 @@ function App() {
                                 Predicted Price: ${predictedPrice.toLocaleString()}
                             </Typography>
                             {linearChartData && (
-                                <Box sx={{ my: 3 }}>
+                                <Box sx={{ mx: 3 }}>
                                     <Line
                                         data={linearChartData}
                                         options={{
@@ -233,7 +286,7 @@ function App() {
                                                 },
                                                 title: {
                                                     display: true,
-                                                    text: 'Price Predictions by Distance'
+                                                    text: 'Price and Distance Visualisation'
                                                 }
                                             },
                                             scales: {
@@ -265,7 +318,7 @@ function App() {
                             </Typography>
                             {linearChartData && (
                                 <Box sx={{ my: 3 }}>
-                                    <Line
+                                    <Bar
                                         data={barChartData}
                                         options={{
                                             responsive: true,
@@ -275,37 +328,19 @@ function App() {
                                                 },
                                                 title: {
                                                     display: true,
-                                                    text: 'Price Predictions by Distance'
-                                                }
-                                            },
-                                            scales: {
-                                                x: {
-                                                    type: 'linear',
-                                                    position: 'bottom',
-                                                    title: {
-                                                        display: true,
-                                                        text: 'Distance(km)'
-                                                    }
-                                                },
-                                                y: {
-                                                    title: {
-                                                        display: true,
-                                                        text: 'Predicted Price ($)'
-                                                    }
+                                                    text: 'Your price Compared to the highest and lowest recorded prices'
                                                 }
                                             }
+                                           
                                         }}
                                     />
                                 </Box>
                             )}
                         </Paper>
                     )}
-
-
                 </Box>
             </Container>
         </Grid>  
-       
   );
 }
 
