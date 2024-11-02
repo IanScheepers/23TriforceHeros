@@ -18,9 +18,9 @@ app.add_middleware(
 # Load data and initialize the model
 model = FlightPriceModel(degrees=8, load=True)
 
-@app.get("/")
+@app.get("/status")
 async def root():
-    return {"message": "This is the flight price prediction API."}
+    return {"message": "Backend status online!"}
 
 # Define a Pydantic model to validate and parse input data for prediction
 class PredictionInput(BaseModel):
