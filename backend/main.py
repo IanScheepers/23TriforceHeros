@@ -30,7 +30,7 @@ class PredictionInput(BaseModel):
     km: int = Field(ge=200, le=3700, description="Flight distance in kms rounded to nearest whole") #200<=km<=3700
   
 # Define a POST endpoint for predicting flight prices
-@app.get("/predict")
+@app.post("/predict")
 async def predict_price(input: PredictionInput):
     try:
         price = model.predict(input.year, input.flights_flown, input.month, input.km)[0]
@@ -45,16 +45,16 @@ async def predict_price(input: PredictionInput):
         raise HTTPException(status_code=500, detail="Internal server error")
 
 #Define a GET endpoint for predicting flight prices
-# @app.get("/predict/{year}/{flights_flown}/{month}/{km}")
-# async def predict_price(year: int, flights_flown: int, month: int, km: int):
-#     try:
-#         price = model.predict(year, flights_flown, month, km)[0]
-#         return {"price": round(price, 2)}
-#     except ValueError as e:
-#         raise HTTPException(status_code=400, detail=f"\
-#                             Invalid input: {str(e)}")
-#     except Exception as e:
-#         raise HTTPException(status_code=500, detail=str(e))
+@app.get("/predict/{year}/{flights_flown}/{month}/{km}")
+async def predict_price(year: int, flights_flown: int, month: int, km: int):
+    try:
+        price = model.predict(year, flights_flown, month, km)[0]
+        return {"price": round(price, 2)}
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=f"\
+                            Invalid input: {str(e)}")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 if __name__ == "__main__":
     import uvicorn
