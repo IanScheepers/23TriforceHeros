@@ -25,7 +25,7 @@ async def root():
 # Define a Pydantic model to validate and parse input data for prediction
 class PredictionInput(BaseModel):
     year: int = Field(ge=2010, le=3000, description="Year of the flight") #2010<=year<=3000
-    flights_flown: int = Field(gt=0, description="Amount of flights that this route has seen this month") #0<flights_flown
+    flights_flown: int = Field(gt=0, le=2500, description="Amount of flights that this route has seen this month") #0<flights_flown<=2500
     month: int = Field(ge=0, le=12, description="Month of the flight") #0<=month<=12
     km: int = Field(ge=200, le=3700, description="Flight distance in kms rounded to nearest whole") #200<=km<=3700
   
