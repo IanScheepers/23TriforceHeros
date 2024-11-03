@@ -19,7 +19,7 @@ This web application will allow the user to generate predictions on the average 
     10. run: python.exe -m pip install "scikit-learn"
     11. run: python.exe -m pip install "pydantic"
     12. run: python.exe -m pip install -e flight_price_model
-    13. run: uvicorn main:app --reload
+    13. run: python -m uvicorn main:app --reload
 3. Open a new Powershell, without closing the original powershell.
     1. Change directory (cd) into the extracted files.
     2. Change directory (cd) into the frontend file.
