@@ -21,7 +21,7 @@ This web application will allow the user to generate predictions on the average 
     12. run: python.exe -m pip install -e flight_price_model
     13. run: uvicorn main:app --reload
 3. Open a new Powershell, without closing the original powershell.
-    1. Change directory  (cd) into the extracted files.
+    1. Change directory (cd) into the extracted files.
     2. Change directory (cd) into the backend file.
     3. run: Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
     4. Select [y]es.
