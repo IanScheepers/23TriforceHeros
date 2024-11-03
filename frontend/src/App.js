@@ -174,7 +174,7 @@ function App() {
                                     sx={{ bgcolor: '#ffffff', borderRadius: '4px', boxShadow: 3 }}
                                     fullWidth
                                     type="number"
-                                    inputProps={{ min: 1 }}
+                                    inputProps={{ min: 1, max: 2500 }}
                                     label="Flights Flown"
                                     variant="outlined"
                                     value={flightFlown}
