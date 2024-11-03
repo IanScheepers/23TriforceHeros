@@ -31,28 +31,15 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
 
-
-
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement,BarElement, Title, Tooltip, Legend } from 'chart.js';
 
 // Register the required components
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, BarElement, Legend);
 
 
-function About() {
-    return (
-        <Container>
-            <Typography variant="h2" component="h1" gutterBottom>
-                About Us
-            </Typography>
-            <Typography variant="h5" component="h2" gutterBottom>
-                This is the About page. Here, you can add more information about the project or your team.
-            </Typography>
-        </Container>
-    );
-}
-
+// this defines the app
 function App() {
+    //setting variables
     const [year, setYear] = useState('');
     const [flightFlown, setFlightFlown] = useState('');
     const [month, setMonth] = useState('');
@@ -65,7 +52,7 @@ function App() {
     const [loading, setLoading] = useState(false);
 
 
-
+    //this will run when the user presses the predict price button button
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
@@ -74,10 +61,11 @@ function App() {
 
         try {
 
+            //this will check and log the status of the back end
             const test = await axios.get(`http://localhost:8000/status`);
             console.log(test.data.message)
 
-            // Axios call to the backend to predict house price
+            // This will send an axios call to get the priced price from the back end based on the variables provided
             const response = await axios.post("http://localhost:8000/predict", {
                 year: year,
                 flights_flown: flightFlown,
@@ -87,35 +75,21 @@ function App() {
             setPredictedPrice(response.data.price);
             console.log(predictedPrice)
 
-            //flight
+            //flight data for testing
             // [2010, 730, 4, 643]  // Smallest $56
             // [2019,198,12, 434]   // Middle   $238
             // [2018, 150, 11, 287] // Median   $343
             // [2012, 250, 1, 1971] // Middle   $495
             // [2021, 44, 4, 2651]  // Largest  $1453
 
-
-            const flightsBaseData = [[2010, 730, 4, 643], [2019, 198, 12, 434], [2018, 150, 11, 287], [2012, 250, 1, 1971], [2021, 44, 4, 2651]];
-            const predictions = await Promise.all(
-                flightsBaseData.map(fbd =>
-                    axios.post("http://localhost:8000/predict", {
-                        year: fbd[0],
-                        flights_flown: fbd[1],
-                        month: fbd[2],
-                        km: fbd[3],
-                    }).then(res => res.data.price)
-                        
-                )
-            );
-
-
+            //this is the data for the line chart, it will map the user's prediction to the highest and lowest distances in the database
             const squareFootagesKMSCALE = [236,3615]
             const newChartData = {
-                labels: squareFootagesKMSCALE,  // X-axis labels (square footage)
+                labels: squareFootagesKMSCALE,
                 datasets: [
                     {
                         label: 'Highest and lowest recorded distances',
-                        data: predictions,  // Y-axis data (predicted prices)
+                        data: [56, 1453], 
                         borderColor: 'rgb(75, 192, 192)',
                         backgroundColor: 'rgba(75, 192, 192, 0.5)',
                         tension: 0.1
@@ -127,13 +101,12 @@ function App() {
                         backgroundColor: 'rgba(255, 99, 132, 0.5)',
                         pointRadius: 8,
                         pointHoverRadius: 12,
-                        showLine: false  // Show only the point for the user's prediction
+                        showLine: false  
                     }
                 ]
             };
 
-            setlinearChartData(newChartData);  // Set the chart data in state
-
+            //this is the data for the bar chart, it will graph the predicted price against the highest and lowest price
             const labels = ["Lowest Price In Dataset","Your Price","Highest Price In Dataset"];
             const data = {
                 labels: labels,
@@ -162,8 +135,9 @@ function App() {
                 }]
 
             };
-            setbarChartData(data);  // Set the chart data in state
-
+            // Set the chart data
+            setbarChartData(data);  
+            setlinearChartData(newChartData);
 
         } catch (err) {
             setError('Error predicting price. Please try again.');
@@ -173,18 +147,13 @@ function App() {
         }
     };
 
-    const features = ["Year", "Flights Flown", "Month", "Distance(Km)"]
-
     return (
-        
         <Grid className= 'wapper'>
             <Container sx={{ bgcolor: '#afe3ff', borderRadius: '16px', borderColor: '#131313', p: 4, my: 4, boxShadow: 5 }} >
                 <Typography variant="h1" sx={{ color: '#131313', textAlign: 'center' }} >AI Flight Price Predictor</Typography>
-
                 <Typography variant="h6" sx={{ textAlign: 'center', my: 10 }}>Thanks to evolutions in technology we are now able to (with varying levels of success) predict future flight prices in Australia! Input the required features in their respective box to become more informed on your future flight's price.</Typography>
 
                 <Box sx={{ mt: 4, textAlign: 'center' }}>
-                   
                     <form onSubmit={handleSubmit}>
                         <Box sx={{ mt: 4, textAlign: 'center' }}>
                             <Box item sx={{ display: 'flex', my: 1, flexDirection: 'row', justifyContent: "space-between", gap: 4 }}>
